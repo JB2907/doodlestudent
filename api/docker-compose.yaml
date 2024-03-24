@@ -3,12 +3,14 @@ services:
   db:
     image: mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=tlc
       - MYSQL_USER=tlc
       - MYSQL_PASSWORD=tlc
+    volumes:
+      - ./src/main/resources/db/migration/:/docker-entrypoint-initdb.d
   etherpad:
     image: etherpad/etherpad
     ports:
@@ -20,3 +22,18 @@ services:
     restart: always
     ports:
       - "2525:25"
+  api:
+    container_name: api
+    image: back
+    ports:
+      - "8080:8080"
+    restart: always
+  front:
+    container_name: front
+    image: front
+    ports:
+      - 80:80
+    volumes:
+      - ./exampleconf/doodle.conf:/etc/nginx/conf.d/doodle.conf
+      - ./exampleconf/myadmin.conf:/etc/nginx/conf.d/myadmin.conf
+      - ./exampleconf/pad.conf:/etc/nginx/conf.d/pad.conf
